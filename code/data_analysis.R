@@ -1,4 +1,6 @@
 
+# clean environment
+rm(list=ls())
 # load libraries
 library(tidyverse)
 library(readxl)
@@ -74,35 +76,35 @@ df %>% dplyr:: group_by(date,sector,region) %>%
 
 
 #----------------------------------------
-# 2) Standards and Poor (SP) and Moodys
+# 2) Standards and Poor (sp) and Moodys
 #----------------------------------------
 
-p1 <- df %>% select(id,SP,Region,Year) %>% distinct(id,Year,Region) %>% 
-  dplyr::group_by(Year,Region) %>%
-  tally() %>% ggplot(.,aes(x = Year, y = n, color = Region)) + 
+p1 <- df %>% select(id,sp,region,year) %>% distinct(id, year, region) %>% 
+  dplyr::group_by(year, region) %>%
+  tally() %>% ggplot(.,aes(x = year, y = n, color = region)) + 
   geom_point() + geom_line() + labs(x = "",y = "Unique firms") + 
   ggtitle("S&P") 
 
 
-p2 <- df %>% select(id,Moodys,Region,Year) %>% distinct(id,Year,Region) %>% 
-  dplyr::group_by(Year,Region) %>%
-  tally() %>% ggplot(.,aes(x = Year, y = n, color = Region)) + 
+p2 <- df %>% select(id, moodys, region, year) %>% distinct(id, year, region) %>% 
+  dplyr::group_by(year, region) %>%
+  tally() %>% ggplot(.,aes(x = year, y = n, color = region)) + 
   geom_point() + geom_line() + labs(x = "",y = "") +
   ggtitle("Moody's")
 
 
 
 # number of observations per year
-p3 <- df %>% select(id,SP,Region,Year) %>% dplyr::group_by(Year,Region) %>%
-  tally() %>% ggplot(.,aes(x = Year, y = n, color = Region)) + 
+p3 <- df %>% select(id,sp,region,year) %>% dplyr::group_by(year,region) %>%
+  tally() %>% ggplot(.,aes(x = year, y = n, color = region)) + 
   geom_point() + geom_line() + labs(x = "Year",y = "Observations") +
   ggtitle("S&P") 
 
 
 
 # number of observations per year
-p4 <- df %>% select(id,Moodys,Region,Year) %>% dplyr::group_by(Year,Region) %>%
-  tally() %>% ggplot(.,aes(x = Year, y = n, color = Region)) + 
+p4 <- df %>% select(id,moodys,region,year) %>% dplyr::group_by(year,region) %>%
+  tally() %>% ggplot(.,aes(x = year, y = n, color = region)) + 
   geom_point() + geom_line() + labs(x = "Year",y = "") +
   ggtitle("Moody's") 
 
@@ -110,20 +112,20 @@ p4 <- df %>% select(id,Moodys,Region,Year) %>% dplyr::group_by(Year,Region) %>%
 (p1 + p2)/(p3 + p4) + plot_layout(guides = "collect")
 
 
-# SP
-p5 <- df %>% select(id,SP,Year) %>% distinct(id,SP,Year) %>%
-  group_by(SP,Year) %>% tally() %>% na.omit() %>% 
-  ggplot(., aes(x = Year, y = SP)) +
+# sp
+p5 <- df %>% select(id,sp,year) %>% distinct(id,sp,year) %>%
+  group_by(sp,year) %>% tally() %>% na.omit() %>% 
+  ggplot(., aes(x = year, y = sp)) +
   geom_tile(aes(fill=n)) + 
   scale_x_continuous(breaks = c(2000:2021),
   expand = c(0,0)) + coord_equal(ratio = 1) +
   scale_fill_viridis(option = "magma") + theme_tufte(base_family = "Helvetica") +
-  labs(y = "Rating category") + ggtitle("SP")
+  labs(y = "Rating category") + ggtitle("sp")
   
 # Moodys
-p6 <-df %>% select(id,Moodys,Year) %>% distinct(id,Moodys,Year) %>%
-  group_by(Moodys,Year) %>% tally() %>% na.omit() %>% 
-  ggplot(., aes(x = Year, y = Moodys)) +
+p6 <-df %>% select(id,moodys,year) %>% distinct(id,moodys,year) %>%
+  group_by(moodys,year) %>% tally() %>% na.omit() %>% 
+  ggplot(., aes(x = year, y = moodys)) +
   geom_tile(aes(fill=n)) + 
   scale_x_continuous(breaks = c(2000:2021),
   expand = c(0,0)) + coord_equal(ratio = 1) +
