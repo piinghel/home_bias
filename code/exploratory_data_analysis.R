@@ -52,14 +52,14 @@ df <- df %>% mutate(
 ggplot(df, aes(x = pd_log)) +
   geom_density(alpha = .7, fill = PALETTE[1]) +
   labs(x = "Probability of default (PD) Logarithmic", y = "Density")
-ggsave("output/figure1.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure1.png", device = "png")
 
 # condition  by region
 ggplot(df, aes(x = pd_log, fill = region)) +
   geom_density(alpha = .7) +
   labs(x = "Probability of Default (PD) Logarithmic", y = "Density") +
   scale_fill_brewer(palette = "Dark2")
-ggsave("output/figure2.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure2.png", device = "png")
 
 
 # condition by sector
@@ -67,7 +67,7 @@ ggplot(df, aes(x = pd_log, fill = sector)) +
   geom_density(alpha = .7) + 
   labs(x = "Probability of Default (PD) Logarithmic", y ="Density") +
   scale_fill_brewer(palette = "Dark2")
-ggsave("output/figure3.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure3.png", device = "png")
 
 # condition by sector and region
 ggplot(df, aes(x = pd_log, fill = region)) +
@@ -75,7 +75,7 @@ ggplot(df, aes(x = pd_log, fill = region)) +
   labs(x = "Probability of Default (PD) Logarithmic", y ="Density") +
   scale_fill_brewer(palette = "Dark2") +
   facet_grid(sector ~ ., scales = "free_y")
-ggsave("output/figure4.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure4.png", device = "png")
 
 
 # visualize over time by sector
@@ -92,7 +92,7 @@ df %>% dplyr::group_by(date, sector, region) %>%
   facet_grid(region ~ ., scales = "free_y") +
   labs(x = "Date", y = "Median Probability of Default (MPD) Logarithmic ", fill = "Sector") 
 
-ggsave("output/figure5.png", device = "png", 
+ggsave("output/exploratory_data_analysis/figure5.png", device = "png", 
        units = "cm", height = 18, width = 24)
 
 
@@ -108,12 +108,12 @@ ggsave("output/figure5.png", device = "png",
 ggplot(df, aes(as.factor(sp))) +
   geom_bar(fill = "steelblue") + labs(x = "Rating category", y = "Count") +
   ggtitle("Standard & Poor's (S&P) (missing values (NA) included)")
-ggsave("output/figure6.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure6.png", device = "png")
 
 ggplot(df, aes(as.factor(moodys))) +
   geom_bar(fill = "steelblue") + labs(x = "Rating category", y = "Count") +
   ggtitle("Moodys (missing values (NA) included)")
-ggsave("output/figure7.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure7.png", device = "png")
 
 # ignore missing values (NA)
 df %>% group_by(sp) %>% tally() %>% na.omit() %>%
@@ -123,7 +123,7 @@ df %>% group_by(sp) %>% tally() %>% na.omit() %>%
 df %>% group_by(moodys) %>% tally() %>% na.omit() %>%
   ggplot(., aes(x = moodys, y = n)) + geom_bar(stat = "identity", fill = PALETTE[1]) +
   labs(x = "Rating category", y = "") + ggtitle("Moodys")
-ggsave("output/figure8.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure8.png", device = "png")
 
 # condition on region
 df %>% group_by(sp, region) %>% tally() %>% na.omit() %>%
@@ -138,7 +138,7 @@ df %>% group_by(moodys, region) %>% tally() %>% na.omit() %>%
   scale_fill_brewer(palette = "Dark2") +
   labs(x = "Rating category", y = "") + ggtitle("Moodys") +
   plot_layout(guides = 'collect')
-ggsave("output/figure9.png", device = "png",
+ggsave("output/exploratory_data_analysis/figure9.png", device = "png",
        units = "cm", height = 14, width = 20)
 
 # condition on sector
@@ -156,7 +156,7 @@ df %>% group_by(moodys, sector) %>% tally() %>% na.omit() %>%
   labs(x = "Rating category", y = "") +
   ggtitle("Moodys") + 
   plot_layout(guides = 'collect')
-ggsave("output/figure10.png", device = "png",
+ggsave("output/exploratory_data_analysis/figure10.png", device = "png",
        units = "cm", height = 14, width = 20)
 
 # condition both on region and sector
@@ -169,7 +169,7 @@ df %>% group_by(sp, sector, region) %>% tally() %>% na.omit() %>%
   labs(x = "Rating category", y = "Count") +
   facet_grid(sector ~ region, scales = "free_y") +
   ggtitle("Standard & Poor's (S&P)")
-ggsave("output/figure11.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure11.png", device = "png")
 
 # 2) Moodys
 df %>% group_by(moodys, sector, region) %>% tally() %>% na.omit() %>%
@@ -180,7 +180,7 @@ df %>% group_by(moodys, sector, region) %>% tally() %>% na.omit() %>%
   labs(x = "Rating category", y = "Count") +
   facet_grid(sector ~ region, scales = "free_y") + 
   ggtitle("Moodys")
-ggsave("output/figure12.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure12.png", device = "png")
 
 
 #-----------------------------------------------------------
@@ -224,7 +224,7 @@ p4 <-
 
 # group together in one plot
 (p1 + p2) / (p3 + p4) + plot_layout(guides = "collect")
-ggsave("output/figure13.png", device = "png")
+ggsave("output/exploratory_data_analysis/figure13.png", device = "png")
 
 
 # Look at the number of categories of rating over time: Standard & Poor's (S&P)
@@ -246,7 +246,7 @@ p6 <-
 
 # group together in one figure
 p5 + p6
-ggsave("output/figure14.png", device = "png",
+ggsave("output/exploratory_data_analysis/figure14.png", device = "png",
        units = "cm", height = 12, width = 24)
 
 # SP: Europe and US
@@ -257,7 +257,7 @@ df %>% select(id, sp, year, region) %>% distinct(id, sp, year, region) %>%
   scale_fill_viridis(option = "magma") + theme_tufte(base_family = "Helvetica") +
   facet_grid(. ~ region) +
   labs(x = "Year", y = "", fill = "Observations") + ggtitle("Standard & Poor's (S&P)")
-ggsave("output/figure15.png", device = "png",
+ggsave("output/exploratory_data_analysis/figure15.png", device = "png",
        units = "cm", height = 12, width = 24)
 
 
@@ -269,7 +269,7 @@ df %>% select(id, moodys, year, region) %>% distinct(id, moodys, year, region) %
   scale_fill_viridis(option = "magma") + theme_tufte(base_family = "Helvetica") +
   facet_grid(. ~ region) +
   labs(x = "Year", y = "Rating category", fill = "Observations") + ggtitle("Moodys")
-ggsave("output/figure16.png", device = "png",
+ggsave("output/exploratory_data_analysis/figure16.png", device = "png",
        units = "cm", height = 12, width = 24)
 
 
@@ -283,7 +283,7 @@ df %>% select(id, sp, year, sector) %>% distinct(id, sp, year, sector) %>%
   scale_fill_viridis(option = "magma") + theme_tufte(base_family = "Helvetica") +
   facet_grid(. ~ sector) +
   labs(x = "Year", y = "Rating category", fill = "Observations") + ggtitle("Standard & Poor's (S&P)")
-ggsave("output/figure17.png", device = "png",
+ggsave("output/exploratory_data_analysis/figure17.png", device = "png",
        units = "cm", height = 12, width = 24)
 
 
@@ -296,7 +296,7 @@ df %>% select(id, moodys, year, sector) %>% distinct(id, moodys, year, sector) %
   scale_fill_viridis(option = "magma") + theme_tufte(base_family = "Helvetica") +
   facet_grid(. ~ sector) +
   labs(x = "Year", y = "Rating category", fill = "Observations") + ggtitle("Moodys")
-ggsave("output/figure18.png", device = "png",
+ggsave("output/exploratory_data_analysis/figure18.png", device = "png",
        units = "cm", height = 12, width = 24)
 
 # SP: Sector and Region
@@ -308,7 +308,7 @@ df %>% select(id, sp, year, sector, region) %>% distinct(id, sp, year, sector, r
   facet_grid(sector ~ region) +
   labs(x = "Year", y = "Rating category", fill = "Observations") + 
   ggtitle("Standard & Poor's (S&P)") 
-ggsave("output/figure19.png", device = "png",
+ggsave("output/exploratory_data_analysis/figure19.png", device = "png",
        units = "cm", height = 12, width = 24)
 
 
@@ -321,7 +321,7 @@ df %>% select(id, moodys, year, sector, region) %>% distinct(id, moodys, year, s
   facet_grid(sector ~ region) +
   labs(x = "Year", y = "Rating category", fill = "Observations") + ggtitle("Moodys")
 
-ggsave("output/figure20.png", device = "png",
+ggsave("output/exploratory_data_analysis/figure20.png", device = "png",
        units = "cm", height = 12, width = 24)
 
 
