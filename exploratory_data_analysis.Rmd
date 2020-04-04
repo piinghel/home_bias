@@ -1,3 +1,27 @@
+---
+title: "Exploratory Data Analsys"
+output: html_notebook
+author: Pieter-Jan Inghelbrecht
+---
+
+## Data exploration
+
+
+All figures shown in this notebook are saved under **output/exploratory_data_analysis/figures**. This analysis is presented in notebook format which makes it easy to share with others. You can find tis notebook under home_bias: **exploratory_data_analysis.nb.html** or for the code in notebook format: **exploratory_data_analysis.Rmd**. Everything is also available on [github](https://github.com/piinghel/home_bias) (platform to store code and allows for version control)
+
+
+
+You can also find the original code under **code/exploratory_data_analysis.R** or on in my [github](https://github.com/piinghel/home_bias) repository (platform to store code,share, and allows for version control). You can hide the code by clicking on the **Hide** buttom, but I recommend you read my code comments as it will help you in understanding the analysis.
+
+
+In this notebook I look at the following two variables:
+
+- **Probability of Default (Logarithmic)**
+- **Ratings category given Standards and Poor (S&P) and Moodys**
+
+### Load libraries
+
+```{r}
 # clear environment
 rm(list = ls())
 # load libraries
@@ -11,7 +35,9 @@ library(viridis)
 library(ggthemes)
 library(RColorBrewer)
 
-
+```
+### Import data and peform some minor data manipulations
+```{r}
 #---------------------------
 # Global parameters
 PALETTE <- RColorBrewer::brewer.pal(n = 8, name = "Dark2")
@@ -43,7 +69,14 @@ df <- df %>% mutate(
   moodys = ifelse(moodys > 17, 17, moodys)
 )
 
+```
 
+
+
+### 1) Probability of Default
+
+#### 1.1) Statitic visualisation (don't take time into account)
+```{r, fig.width = 12, fig.height = 6}
 #----------------------------------------
 # 1) PROBABITLITY OF DEFAULT (PD)
 #----------------------------------------
@@ -51,13 +84,13 @@ df <- df %>% mutate(
 # overall distribution of PD
 ggplot(df, aes(x = pd_log)) +
   geom_density(alpha = .7, fill = PALETTE[1]) +
-  labs(x = "Probability of default (PD) Logarithmic", y = "Density")
+  labs(x = "Probability of default (Logarithmic)", y = "Density")
 ggsave("output/exploratory_data_analysis/figures/figure1.png", device = "png")
 
 # condition  by region
 ggplot(df, aes(x = pd_log, fill = region)) +
   geom_density(alpha = .7) +
-  labs(x = "Probability of Default (PD) Logarithmic", y = "Density") +
+  labs(x = "Probability of Default (Logarithmic)", y = "Density") +
   scale_fill_brewer(palette = "Dark2")
 ggsave("output/exploratory_data_analysis/figures/figure2.png", device = "png")
 
@@ -65,19 +98,22 @@ ggsave("output/exploratory_data_analysis/figures/figure2.png", device = "png")
 # condition by sector
 ggplot(df, aes(x = pd_log, fill = sector)) +
   geom_density(alpha = .7) + 
-  labs(x = "Probability of Default (PD) Logarithmic", y ="Density") +
+  labs(x = "Probability of Default (Logarithmic)", y ="Density") +
   scale_fill_brewer(palette = "Dark2")
 ggsave("output/exploratory_data_analysis/figures/figure3.png", device = "png")
 
 # condition by sector and region
 ggplot(df, aes(x = pd_log, fill = region)) +
   geom_density(alpha = .7) + 
-  labs(x = "Probability of Default (PD) Logarithmic", y ="Density") +
+  labs(x = "Probability of Default (Logarithmic)", y ="Density") +
   scale_fill_brewer(palette = "Dark2") +
   facet_grid(sector ~ ., scales = "free_y")
 ggsave("output/exploratory_data_analysis/figures/figure4.png", device = "png")
 
+```
+#### 1.2) Dynamic visualisation (take time into account)
 
+```{r, fig.width = 12, fig.height = 6}
 # visualize over time by sector
 df %>% dplyr::group_by(date, sector, region) %>%
   dplyr::summarise(central_measure_pd = median(pd_log, na.rm = TRUE)) %>%
@@ -90,19 +126,17 @@ df %>% dplyr::group_by(date, sector, region) %>%
            label = "March 6, 2009: The Dow Jones hit its lowest level") +
   #scale_y_continuous(trans = "log10") +
   facet_grid(region ~ ., scales = "free_y") +
-  labs(x = "Date", y = "Median Probability of Default (MPD) Logarithmic ", fill = "Sector") 
+  labs(x = "Date", y = "Median Probability of Default (Logarithmic) ", fill = "Sector") 
 
 ggsave("output/exploratory_data_analysis/figures/figure5.png", device = "png", 
        units = "cm", height = 18, width = 24)
 
+```
 
-#----------------------------------------
-# 2) Standards and Poor (sp) and Moodys
-#----------------------------------------
+### 2) Standards and Poor (S&P) and Moodys
 
-#-----------------------------------------------------------
-# 2.1) Statitic visualisation (don't take time into account)
-#-----------------------------------------------------------
+#### 2.1) Statitic visualisation (don't take time into account)
+```{r, fig.width = 12, fig.height = 6}
 
 # include missing values (NA)
 ggplot(df, aes(as.factor(sp))) +
@@ -183,9 +217,11 @@ df %>% group_by(moodys, sector, region) %>% tally() %>% na.omit() %>%
 ggsave("output/exploratory_data_analysis/figures/figure12.png", device = "png")
 
 
-#-----------------------------------------------------------
-# 2.1) Dynamic visualisation (take time into account)
-#-----------------------------------------------------------
+
+```
+#### 2.2) Dynamic visualisation (take time into account)
+
+```{r, fig.width = 12, fig.height = 6}
 
 # check the number of observations over time
 p1 <-
@@ -195,6 +231,7 @@ p1 <-
   geom_point() + geom_line() + labs(x = "", y = "Unique firms") +
   scale_color_brewer(palette = "Dark2") +
   ggtitle("S&P")
+
 
 p2 <-
   df %>% select(id, moodys, region, year) %>% distinct(id, year, region) %>%
@@ -211,8 +248,6 @@ p3 <-
   geom_point() + geom_line() + labs(x = "Year", y = "Observations") +
   scale_color_brewer(palette = "Dark2") +
   ggtitle("S&P")
-
-
 
 # number of observations per year
 p4 <-
@@ -323,7 +358,6 @@ df %>% select(id, moodys, year, sector, region) %>% distinct(id, moodys, year, s
 
 ggsave("output/exploratory_data_analysis/figures/figure20.png", device = "png",
        units = "cm", height = 12, width = 24)
-
-
+```
 
 

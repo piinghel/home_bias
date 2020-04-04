@@ -7,32 +7,33 @@ compare_means <- function(data = NULL,
                           pallette = "Dark2",
                           alternative = "two.sided",
                           var_equal = FALSE,
-                          return_statistic = FALSE) {
+                          return_statistic = FALSE,
+                          add = "none") {
   # filter by cateogory
   summary_df <-
     data %>% select(pd_log, region, !!dplyr::sym(credit_agency)) %>% na.omit() %>%
     filter(!!dplyr::sym(credit_agency) == category)
   
-  # boxplot
+  # boxplot 
   p <- ggboxplot(
-    data = summary_df,
-    x = "region",
-    y = "pd_log",
-    color = "region",
-    palette = pallette,
-    size = .05
-  ) +
-    # Add p-value and and specify method
-    stat_compare_means(
-      method = method,
-      label.y = label_y,
-      method.args = list(alternative = alternative,
-                         var.equal = var_equal)
+      data = summary_df,
+      x = "region",
+      y = "pd_log",
+      color = "region",
+      palette = pallette,
+      size = .05,
+      add=add
     ) +
-    labs(x = "Region", y = "Probability of Default (Logarithmic)") +
-    ggtitle(paste(title, ":", category)) +
+      # Add p-value and and specify method
+      stat_compare_means(
+        method = method,
+        label.y = label_y,
+        method.args = list(alternative = alternative,
+                           var.equal = var_equal)
+      ) +
+      labs(x = "Region", y = "Probability of Default (Logarithmic)") +
+      ggtitle(paste(title, ":", category)) +
     theme_gray()
-  
   
   
   if (return_statistic == TRUE) {
@@ -57,9 +58,12 @@ compare_means <- function(data = NULL,
     
     return(list(figure = p, statistics = tbl))
   }
-  else{
-    return(list(figure = p))
+  if (return_statistic == FALSE){
     
+    return(list(figure = p))
   }
-  
 }
+  
+
+
+
